@@ -1,33 +1,26 @@
 import cv2
 
-from vision.camera import Camera
 from vision.face_detector import FaceDetector
 from vision.emotion_detector import EmotionDetector
 
 
 class VisionModule:
+
     def __init__(self, model_path):
         self.face_detector = FaceDetector()
         self.emotion_detector = EmotionDetector(model_path)
 
         print("VisionModule initializat.")
 
-    def analyze_image(self, image_path):
-        camera = Camera(image_path)
+    def analyze_frame(self, frame):
 
-        image = camera.capture()
-
-        if image is None:
-            print("Nu s-a putut incarca imaginea.")
-            return []
-
-        faces = self.face_detector.detect(image)
-        face_crops = self.face_detector.crop_faces(image, faces)
+        faces = self.face_detector.detect(frame)
+        face_crops = self.face_detector.crop_faces(frame, faces)
 
         results = []
-        output = image.copy()
 
         for index, face in enumerate(face_crops):
+
             emotion, confidence, raw_predictions = self.emotion_detector.predict(face)
 
             x, y, w, h = faces[index]
@@ -44,10 +37,16 @@ class VisionModule:
 
             label = f"{emotion} {confidence:.1%}"
 
-            cv2.rectangle(output, (x, y), (x + w, y + h), (0, 255, 0), 3)
+            cv2.rectangle(
+                frame,
+                (x, y),
+                (x + w, y + h),
+                (0, 255, 0),
+                3
+            )
 
             cv2.putText(
-                output,
+                frame,
                 label,
                 (x, y - 10),
                 cv2.FONT_HERSHEY_SIMPLEX,
@@ -55,7 +54,5 @@ class VisionModule:
                 (0, 255, 0),
                 2
             )
-
-        cv2.imwrite("resources/images/result_emotions.jpg", output)
 
         return results

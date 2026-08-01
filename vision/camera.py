@@ -1,17 +1,26 @@
 import cv2
 
 class Camera:
-    def __init__(self, image_path):
-        self.image_path = image_path
-        print("Camera initializata cu imaginea:", self.image_path)
+
+    def __init__(self, camera_index=0, width=640, height=480):
+        self.cap = cv2.VideoCapture(camera_index)
+
+        if not self.cap.isOpened():
+            raise RuntimeError("Camera nu a putut fi deschisă.")
+
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
+        print("Camera initializata.")
 
     def capture(self):
-        image = cv2.imread(self.image_path)
+        success, frame = self.cap.read()
 
-        if image is None:
-            print("Eroare la citirea imaginii:", self.image_path)
+        if not success:
+            print("Eroare la capturarea imaginii.")
             return None
 
-        print("Imagine incarcata cu succes.")
+        return frame
 
-        return image
+    def release(self):
+        self.cap.release()

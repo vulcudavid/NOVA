@@ -1,20 +1,32 @@
+import cv2
+
+from vision.camera import Camera
 from vision.vision_module import VisionModule
 
 
 def main():
+
+    camera = Camera()
     vision = VisionModule("resources/models/custom_cnn_model.tflite")
 
-    results = vision.analyze_image("resources/images/hoarda.jpeg")
+    while True:
 
-    print("\nRezultate Vision:")
+        frame = camera.read()
 
-    for result in results:
-        print(f"Fata {result['index']}:")
-        print("  Box:", result["box"])
-        print("  Emotie:", result["emotion"])
-        print(f"  Incredere: {result['confidence']:.2%}")
+        if frame is None:
+            break
 
-    print("\nImaginea finala a fost salvata in resources/images/result_emotions.jpg")
+        results = vision.analyze_frame(frame)
+
+        cv2.imshow("NOVA - Emotion Recognition", frame)
+
+        key = cv2.waitKey(1) & 0xFF
+
+        if key == ord("q"):
+            break
+
+    camera.release()
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
