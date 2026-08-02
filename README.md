@@ -14,26 +14,6 @@ The objective of the project is to create an intelligent system capable of adapt
 - 🔄 Automatic game difficulty adjustment
 - 🖥️ Modular software architecture
 
-## Current Architecture
-
-```
-NOVA
-│
-├── vision/
-│   ├── Camera
-│   ├── FaceDetector
-│   ├── EmotionDetector
-│   └── VisionModule
-│
-├── difficulty/
-│   └── DifficultyManager
-│
-├── games/
-│   ├── GameManager
-│   └── DinoGame
-│
-└── app.py
-```
 
 ## Difficulty System
 
@@ -117,8 +97,6 @@ The purpose of this game is not therapeutic by itself. It serves as a sandbox fo
 - Achievement system
 - Data logging
 - Custom emotion recognition model
-- Raspberry Pi deployment
-- ESP32 companion device
 - Voice interaction
 - AI conversational assistant
 
