@@ -1,5 +1,4 @@
 import cv2
-
 from vision.face_detector import FaceDetector
 from vision.emotion_detector import EmotionDetector
 

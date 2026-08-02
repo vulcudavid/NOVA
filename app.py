@@ -1,11 +1,14 @@
 import cv2
-
 from vision.camera import Camera
 from vision.vision_module import VisionModule
+from games.game_manager import GameManager
 
 
 def main():
 
+    manager = GameManager()
+
+    manager.start()
     camera = Camera()
     vision = VisionModule("resources/models/custom_cnn_model.tflite")
 
@@ -16,13 +19,11 @@ def main():
         if frame is None:
             break
 
-        results = vision.analyze_frame(frame)
+        vision.analyze_frame(frame)
 
         cv2.imshow("NOVA - Emotion Recognition", frame)
 
-        key = cv2.waitKey(1) & 0xFF
-
-        if key == ord("q"):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
     camera.release()

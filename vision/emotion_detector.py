@@ -18,17 +18,11 @@ class EmotionDetector:
     def __init__(self, model_path):
         self.model_path = model_path
 
-        print("Emotion Detector initializat")
-        print("Model:", self.model_path)
-
         self.interpreter = Interpreter(model_path=self.model_path)
         self.interpreter.allocate_tensors()
 
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
-
-        print("Input details:", self.input_details)
-        print("Output details:", self.output_details)
 
     def preprocess(self, face_image):
         gray = cv2.cvtColor(face_image, cv2.COLOR_BGR2GRAY)
@@ -65,7 +59,6 @@ class EmotionDetector:
         self.interpreter.invoke()
 
         predictions = self.interpreter.get_tensor(output_index)[0]
-        print(predictions)
 
         emotion, confidence = self.interpret_emotion(predictions)
 

@@ -13,7 +13,7 @@ class Camera:
 
         print("Camera initializata.")
 
-    def capture(self):
+    def read(self):
         success, frame = self.cap.read()
 
         if not success:
