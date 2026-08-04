@@ -1,3 +1,5 @@
+from Client.ServerClient import ServerClient
+
 class ComunicationManager:
 
     def __init__(self, difficulty_manager): #se initializeaza dificultatea, textul si obiectul de tip client

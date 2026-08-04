@@ -6,7 +6,7 @@ class DifficultyManager:
         self.sadAngry_start = None
         self.current_score=50
         self.last_change_message = ""
-        self.currentComm_level = 3
+        self.currentComm_level = 2
         self.currentGame_level = 1
 
     def emotion_manager(self, emotion, confidence):

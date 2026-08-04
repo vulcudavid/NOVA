@@ -1,21 +1,25 @@
 import requests
 
+
 class ServerClient:
+
     def __init__(self):
-        self.server_ip = "127.0.0.1"
-        self.server_port = 8000
-        self.server_url = (
-            f"http://{self.server_ip}:{self.server_port}"
-        )
+
+        self.server_url = "http://192.168.100.84:8000/chat"
 
     def send_message(self, message):
+
         try:
-            respone = requests.post(
-                self.server_url + "/chat", json=message, timeout=5
+
+            response = requests.post(
+                self.server_url,
+                json=message
             )
-            return respone.json()
+
+            return response.json()
+
         except Exception as e:
+
             return {
-                "status": "error",
-                "message": str(e)
+                "error": str(e)
             }
