@@ -1,12 +1,11 @@
 from Client.ServerClient import ServerClient
-from activity.ActivityManager import ActivityManager
 
 class ComunicationManager:
 
-    def __init__(self, difficulty_manager): #se initializeaza dificultatea, textul si obiectul de tip client
+    def __init__(self, difficulty_manager, activity_manager): #se initializeaza dificultatea, textul si obiectul de tip client
         self.difficulty_manager = difficulty_manager
         self.client = ServerClient()  # se defineste ServerClient in aplta parte
-        self.activity_manager = ActivityManager()
+        self.activity_manager = activity_manager
 
     def get_user_input(self): #se preia inputul dat de utilizator si se returneaza textul
         text = input("You: ")
