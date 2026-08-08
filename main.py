@@ -1,15 +1,15 @@
 import threading
-import cv2
+import queue
 import time
 
 from communication.comm_manager import ComunicationManager
 from difficulty.difficulty_manager import DifficultyManager
 from activity.ActivityManager import ActivityManager
-from vision.camera import Camera
-from vision.vision_module import VisionModule
+from audio.audio_manager import AudioManager
 
-# from activity.activity_manager import ActivityManager
-# from audio.audio_manager import AudioManager
+# from vision.camera import Camera
+# from vision.vision_module import VisionModule
+
 # from ui.ui_manager import UIManager
 
 
@@ -17,11 +17,16 @@ from vision.vision_module import VisionModule
 # COMMUNICATION THREAD
 # ============================================================
 
-def communication_thread(difficulty, activity_manager):
+def communication_thread(
+    difficulty,
+    activity_manager,
+    audio_queue
+):
 
     manager = ComunicationManager(
         difficulty,
-        activity_manager
+        activity_manager,
+        audio_queue
     )
 
     manager.run()
@@ -33,38 +38,20 @@ def communication_thread(difficulty, activity_manager):
 
 def emotion_thread():
 
-    camera = Camera()
+    # Camera is currently unavailable.
+    # This thread will be enabled when the camera is available.
 
-    vision = VisionModule(
-        "resources/models/custom_cnn_model.tflite"
-    )
-
-    while True:
-
-        frame = camera.read()
-
-        if frame is None:
-            break
-
-        vision.analyze_frame(frame)
-
-        # cv2.imshow(
-        #     "NOVA - Emotion Recognition",
-        #     frame
-        # )
-
-        # if cv2.waitKey(1) & 0xFF == ord("q"):
-        #     break
-
-    camera.release()
-    # cv2.destroyAllWindows()
+    pass
 
 
 # ============================================================
 # ACTIVITY THREAD
 # ============================================================
 
-def activity_thread(activity_manager):
+def activity_thread(
+    activity_manager,
+    audio_queue
+):
 
     while True:
 
@@ -74,6 +61,8 @@ def activity_thread(activity_manager):
 
             print(message)
 
+            audio_queue.put(message)
+
         time.sleep(1)
 
 
@@ -81,14 +70,23 @@ def activity_thread(activity_manager):
 # AUDIO THREAD
 # ============================================================
 
-# Va fi implementat când introducem partea audio.
-#
-# def audio_thread():
-#
-#     audio_manager = AudioManager()
-#
-#     while True:
-#         audio_manager.process()
+def audio_thread(audio_queue):
+
+    audio_manager = AudioManager(
+        "./ro_RO-mihai-medium.onnx"
+    )
+
+    while True:
+
+        text = audio_queue.get()
+
+        try:
+
+            audio_manager.speak(text)
+
+        finally:
+
+            audio_queue.task_done()
 
 
 # ============================================================
@@ -96,6 +94,7 @@ def activity_thread(activity_manager):
 # ============================================================
 
 # UI-ul va conține:
+#
 # - meniul
 # - navigarea
 # - state machine
@@ -119,8 +118,16 @@ def activity_thread(activity_manager):
 
 def main():
 
+    # --------------------------------------------------------
+    # Shared objects
+    # --------------------------------------------------------
+
     difficulty = DifficultyManager()
-    activity_manager = ActivityManager()   
+
+    activity_manager = ActivityManager()
+
+    audio_queue = queue.Queue()
+
 
     # --------------------------------------------------------
     # Communication Thread
@@ -128,10 +135,15 @@ def main():
 
     communication = threading.Thread(
         target=communication_thread,
-        args=(difficulty, activity_manager),
+        args=(
+            difficulty,
+            activity_manager,
+            audio_queue
+        ),
         name="CommunicationThread",
         daemon=True
     )
+
 
     # --------------------------------------------------------
     # Emotion Thread
@@ -143,26 +155,33 @@ def main():
         daemon=True
     )
 
+
     # --------------------------------------------------------
     # Activity Thread
     # --------------------------------------------------------
 
     activity = threading.Thread(
         target=activity_thread,
-        args=(activity_manager,),
+        args=(
+            activity_manager,
+            audio_queue
+        ),
         name="ActivityThread",
         daemon=True
     )
+
 
     # --------------------------------------------------------
     # Audio Thread
     # --------------------------------------------------------
 
-    # audio = threading.Thread(
-    #     target=audio_thread,
-    #     name="AudioThread",
-    #     daemon=True
-    # )
+    audio = threading.Thread(
+        target=audio_thread,
+        args=(audio_queue,),
+        name="AudioThread",
+        daemon=True
+    )
+
 
     # --------------------------------------------------------
     # UI Thread
@@ -174,23 +193,27 @@ def main():
     #     daemon=True
     # )
 
+
     # --------------------------------------------------------
     # Pornirea thread-urilor
     # --------------------------------------------------------
 
     communication.start()
-    # emotion.start() - camera lipsa
+    # Camera momentan nu este disponibilă.
+    # emotion.start()
     activity.start()
+    audio.start()
+    # ui.start()
+
 
     # --------------------------------------------------------
     # Așteptăm thread-urile active
     # --------------------------------------------------------
 
     communication.join()
-    # emotion.join() - camera lipsa
+    # emotion.join()
     activity.join()
-
-    # audio.join()
+    audio.join()
     # ui.join()
 
 
