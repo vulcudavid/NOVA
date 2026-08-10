@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>NOVA</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div id="app">
+
+        <!-- ========================================= -->
+        <!-- SIDEBAR / MENU                            -->
+        <!-- ========================================= -->
+
+        <aside id="sidebar">
+
+            <div class="logo">
+                NOVA
+            </div>
+
+            <nav>
+
+                <button
+                    class="menu-button active"
+                    data-page="home"
+                >
+                    🏠
+                    <span>Acasă</span>
+                </button>
+
+                <button
+                    class="menu-button"
+                    data-page="chat"
+                >
+                    💬
+                    <span>Chat</span>
+                </button>
+
+                <button
+                    class="menu-button"
+                    data-page="games"
+                >
+                    🎮
+                    <span>Jocuri</span>
+                </button>
+
+                <button
+                    class="menu-button"
+                    data-page="settings"
+                >
+                    ⚙️
+                    <span>Setări</span>
+                </button>
+
+            </nav>
+
+        </aside>
+
+
+        <!-- ========================================= -->
+        <!-- MAIN CONTENT                              -->
+        <!-- ========================================= -->
+
+        <main id="content">
+
+
+            <!-- HOME -->
+
+            <section
+                class="page active"
+                id="page-home"
+            >
+
+                <h1>Salut!</h1>
+
+                <p>
+                    Sunt NOVA, AI-ul tău de companie.
+                </p>
+
+                <div class="home-card">
+
+                    <h2>Bine ai revenit!</h2>
+
+                    <p>
+                        Alege o opțiune din meniul principal.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <!-- CHAT -->
+
+            <section
+                class="page"
+                id="page-chat"
+            >
+
+                <h1>Chat</h1>
+
+                <div id="chat-container">
+
+                    <div id="messages"></div>
+
+                    <div id="chat-input-container">
+
+                        <input
+                            id="chat-input"
+                            type="text"
+                            placeholder="Scrie un mesaj..."
+                        >
+
+                        <button id="send-button">
+                            Trimite
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- GAMES -->
+
+            <section
+                class="page"
+                id="page-games"
+            >
+
+                <h1>Jocuri</h1>
+
+                <div class="games-grid">
+
+                    <button class="game-card">
+                        <span class="game-icon">🧠</span>
+                        <span>Memorie</span>
+                    </button>
+
+                    <button class="game-card">
+                        <span class="game-icon">⚡</span>
+                        <span>Reacție</span>
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- SETTINGS -->
+
+            <section
+                class="page"
+                id="page-settings"
+            >
+
+                <h1>Setări</h1>
+
+                <div class="settings-card">
+
+                    <p>
+                        Setările NOVA vor fi disponibile aici.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <script src="/static/js/app.js"></script>
+
+</body>
+
+</html>
