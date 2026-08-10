@@ -36,11 +36,13 @@ class DifficultyManager:
     def increase_game_difficulty(self):
         if self.currentGame_level < 3:
             self.currentGame_level += 1
+            self.current_score = 50
             self.last_change_message = "Difficulty Increased!"
 
     def decrease_game_difficulty(self):
         if self.currentGame_level > 1:
             self.currentGame_level -= 1
+            self.current_score = 50
             self.last_change_message = "Difficulty Decreased!"
 
     def increase_comm_difficulty(self):

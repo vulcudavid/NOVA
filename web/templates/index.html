@@ -82,24 +82,133 @@
 
             <!-- HOME -->
 
+
             <section
                 class="page active"
                 id="page-home"
             >
 
-                <h1>Salut!</h1>
+                <div class="home-header">
 
-                <p>
-                    Sunt NOVA, AI-ul tău de companie.
-                </p>
+                    <div>
+                        <h1>Salut!</h1>
 
-                <div class="home-card">
+                        <p class="home-subtitle">
+                            Sunt NOVA, asistentul tău digital.
+                        </p>
+                    </div>
 
-                    <h2>Bine ai revenit!</h2>
+                    <div class="nova-status home-status">
+                        <span class="status-dot"></span>
+                        Online
+                    </div>
 
-                    <p>
-                        Alege o opțiune din meniul principal.
-                    </p>
+                </div>
+
+
+                <!-- CONTINUE CHAT -->
+
+                <button
+                    class="home-card home-chat-card"
+                    data-page-target="chat"
+                >
+
+                    <div class="home-card-icon">
+                        💬
+                    </div>
+
+                    <div class="home-card-content">
+
+                        <h2>Continuă conversația</h2>
+
+                        <p>
+                            Vorbește cu NOVA și continuă conversația.
+                        </p>
+
+                    </div>
+
+                    <div class="home-card-arrow">
+                        →
+                    </div>
+
+                </button>
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="home-grid">
+
+                    <button
+                        class="home-card home-action-card"
+                        data-page-target="games"
+                    >
+
+                        <div class="home-card-icon">
+                            🎮
+                        </div>
+
+                        <div class="home-card-content">
+
+                            <h2>Jocuri</h2>
+
+                            <p>
+                                Activități și jocuri interactive.
+                            </p>
+
+                        </div>
+
+                        <div class="home-card-arrow">
+                            →
+                        </div>
+
+                    </button>
+
+
+                    <button
+                        class="home-card home-action-card"
+                        data-page-target="settings"
+                    >
+
+                        <div class="home-card-icon">
+                            ⚙️
+                        </div>
+
+                        <div class="home-card-content">
+
+                            <h2>Setări</h2>
+
+                            <p>
+                                Personalizează experiența NOVA.
+                            </p>
+
+                        </div>
+
+                        <div class="home-card-arrow">
+                            →
+                        </div>
+
+                    </button>
+
+                </div>
+
+
+                <!-- NOVA STATUS CARD -->
+
+                <div class="home-info-card">
+
+                    <div class="home-info-icon">
+                        ✨
+                    </div>
+
+                    <div>
+
+                        <h3>NOVA este pregătită</h3>
+
+                        <p>
+                            Chat-ul, vocea și activitățile sunt disponibile.
+                        </p>
+
+                    </div>
 
                 </div>
 
@@ -113,11 +222,48 @@
                 id="page-chat"
             >
 
-                <h1>Chat</h1>
+                <div class="chat-header">
+
+                    <div>
+                        <h1>Chat</h1>
+
+                        <p class="chat-subtitle">
+                            Vorbește cu NOVA
+                        </p>
+                    </div>
+
+                    <div class="nova-status">
+                        <span class="status-dot"></span>
+                        Online
+                    </div>
+
+                </div>
+
 
                 <div id="chat-container">
 
-                    <div id="messages"></div>
+                    <div id="messages">
+
+                        <!-- Mesajele vor fi adăugate aici -->
+
+                    </div>
+
+
+                    <div
+                        id="typing-indicator"
+                        class="typing-indicator"
+                    >
+
+                        <span>NOVA scrie</span>
+
+                        <span class="typing-dots">
+                            <span>.</span>
+                            <span>.</span>
+                            <span>.</span>
+                        </span>
+
+                    </div>
+
 
                     <div id="chat-input-container">
 
@@ -125,10 +271,15 @@
                             id="chat-input"
                             type="text"
                             placeholder="Scrie un mesaj..."
+                            autocomplete="off"
                         >
 
-                        <button id="send-button">
-                            Trimite
+                        <button
+                            id="send-button"
+                            type="button"
+                            title="Trimite mesajul"
+                        >
+                            ➤
                         </button>
 
                     </div>
@@ -136,7 +287,6 @@
                 </div>
 
             </section>
-
 
             <!-- GAMES -->
 
@@ -147,16 +297,143 @@
 
                 <h1>Jocuri</h1>
 
-                <div class="games-grid">
 
-                    <button class="game-card">
+                <!-- GAME SELECTION -->
+
+                <div
+                    id="games-menu"
+                    class="games-grid"
+                >
+
+                    <button
+                        class="game-card"
+                        data-game="memory"
+                    >
                         <span class="game-icon">🧠</span>
                         <span>Memorie</span>
                     </button>
 
-                    <button class="game-card">
+
+                    <button
+                        class="game-card"
+                        data-game="reaction"
+                    >
                         <span class="game-icon">⚡</span>
                         <span>Reacție</span>
+                    </button>
+
+                </div>
+
+
+                <!-- MEMORY GAME -->
+
+                <div
+                    id="memory-game"
+                    class="game-screen"
+                >
+
+                    <div class="game-header">
+
+                        <button
+                            id="memory-back"
+                            class="game-back-button"
+                        >
+                            ← Înapoi
+                        </button>
+
+                        <h2>Memorie</h2>
+
+                    </div>
+
+
+                    <div class="game-stats">
+
+                        <div>
+
+                            <span>Scor</span>
+
+                            <strong id="memory-score">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>Încercări</span>
+
+                            <strong id="memory-attempts">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <div id="memory-global-stats">
+
+                        <div>
+                            <span>Scor NOVA</span>
+                            <strong id="memory-global-score">50</strong>
+                        </div>
+
+                        <div>
+                            <span>Nivel</span>
+                            <strong id="memory-game-level">1</strong>
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="memory-level-message"
+                        class="memory-level-message"
+                        style="display: none;"
+                    >
+                    </div>
+
+                    <div
+                        id="memory-level-actions"
+                        class="memory-level-actions"
+                        style="display: none;"
+                    >
+
+                        <button
+                            id="memory-increase-level"
+                            class="game-new-button"
+                        >
+                            ↑ Crește nivelul
+                        </button>
+
+                        <button
+                            id="memory-decrease-level"
+                            class="game-new-button"
+                        >
+                            ↓ Scade nivelul
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="memory-game-over"
+                        class="memory-game-over"
+                        style="display: none;"
+                    >
+                    </div>
+
+
+                    <div
+                        id="memory-board"
+                        class="memory-board"
+                    >
+                    </div>
+
+
+                    <button
+                        id="memory-new-game"
+                        class="game-new-button"
+                    >
+                        Joc nou
                     </button>
 
                 </div>
