@@ -438,6 +438,112 @@
 
                 </div>
 
+
+                <!-- REACTION GAME -->
+
+                <div
+                    id="reaction-game"
+                    class="game-screen"
+                    style="display: none;"
+                >
+
+                    <div class="game-header">
+
+                        <button
+                            id="reaction-back"
+                            class="game-back-button"
+                        >
+                            ← Înapoi
+                        </button>
+
+                        <h2>Reacție</h2>
+
+                    </div>
+
+
+                    <!-- GAME MENU -->
+
+                    <div
+                        id="reaction-menu"
+                        class="reaction-menu"
+                    >
+
+                        <h3>Reaction Game</h3>
+
+                        <button
+                            id="reaction-start-button"
+                            class="game-new-button"
+                        >
+                            Start Joc
+                        </button>
+
+                    </div>
+
+
+                    <!-- GAME CONTAINER -->
+
+                    <div
+                        id="reaction-container"
+                        class="reaction-container"
+                        style="display: none;"
+                    >
+
+                        <p id="reaction-text">
+                            Asteptati....
+                        </p>
+
+                        <button
+                            id="reaction-box"
+                            class="reaction-box"
+                        >
+                        </button>
+
+                    </div>
+
+
+                    <!-- RESULTS -->
+
+                    <div
+                        id="reaction-results"
+                        class="reaction-results"
+                        style="display: none;"
+                    >
+
+                        <h3>Rezultat</h3>
+
+                        <div class="reaction-time-display">
+
+                            <p>Timp de reacție:</p>
+
+                            <strong id="reaction-time-value">
+                                0
+                            </strong>
+
+                            <span>ms</span>
+
+                        </div>
+
+                        <div class="reaction-score-display">
+
+                            <p>Scor:</p>
+
+                            <strong id="reaction-score-value">
+                                0
+                            </strong>
+
+                        </div>
+
+                        <button
+                            id="reaction-new-game"
+                            class="game-new-button"
+                        >
+                            Joc nou
+                        </button>
+
+                    </div>
+
+                </div>
+
             </section>
 
 
@@ -450,11 +556,205 @@
 
                 <h1>Setări</h1>
 
+                <!-- DIFFICULTY SETTINGS -->
+
                 <div class="settings-card">
 
-                    <p>
-                        Setările NOVA vor fi disponibile aici.
-                    </p>
+                    <h2>Nivele de Dificultate</h2>
+
+                    <div class="settings-grid">
+
+                        <div class="setting-item">
+
+                            <div class="setting-label">
+                                <span>Nivel Comunicare LLM</span>
+                                <strong id="comm-level-display">
+                                    1
+                                </strong>
+                            </div>
+
+                            <div class="level-bar">
+
+                                <div
+                                    class="level-indicator"
+                                    id="comm-level-bar"
+                                    style="width: 33%;"
+                                ></div>
+
+                            </div>
+
+                            <p class="setting-description">
+                                Cât de complex este dialogul cu NOVA
+                            </p>
+
+                        </div>
+
+                        <div class="setting-item">
+
+                            <div class="setting-label">
+                                <span>Nivel Joc</span>
+                                <strong id="game-level-display">
+                                    1
+                                </strong>
+                            </div>
+
+                            <div class="level-bar">
+
+                                <div
+                                    class="level-indicator"
+                                    id="game-level-bar"
+                                    style="width: 33%;"
+                                ></div>
+
+                            </div>
+
+                            <p class="setting-description">
+                                Dificultatea jocurilor de memorie
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- GAME STATISTICS -->
+
+                <div class="settings-card">
+
+                    <h2>Statistici Jocuri</h2>
+
+                    <div class="settings-grid">
+
+                        <!-- MEMORY GAME STATS -->
+
+                        <div class="stat-item">
+
+                            <div class="stat-header">
+                                <span class="stat-icon">🧠</span>
+                                <span>Jocul Memoriei</span>
+                            </div>
+
+                            <div class="stat-content">
+
+                                <div class="stat-row">
+                                    <span>Jocuri jucate</span>
+                                    <strong id="memory-games-played">
+                                        0
+                                    </strong>
+                                </div>
+
+                                <div class="stat-row">
+                                    <span>Scor maxim</span>
+                                    <strong id="memory-best-score">
+                                        0
+                                    </strong>
+                                </div>
+
+                                <div class="stat-row">
+                                    <span>Scor mediu</span>
+                                    <strong id="memory-avg-score">
+                                        0
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- REACTION GAME STATS -->
+
+                        <div class="stat-item">
+
+                            <div class="stat-header">
+                                <span class="stat-icon">⚡</span>
+                                <span>Jocul Reacției</span>
+                            </div>
+
+                            <div class="stat-content">
+
+                                <div class="stat-row">
+                                    <span>Jocuri jucate</span>
+                                    <strong id="reaction-games-played">
+                                        0
+                                    </strong>
+                                </div>
+
+                                <div class="stat-row">
+                                    <span>Timp minim (ms)</span>
+                                    <strong id="reaction-best-time">
+                                        0
+                                    </strong>
+                                </div>
+
+                                <div class="stat-row">
+                                    <span>Timp mediu (ms)</span>
+                                    <strong id="reaction-avg-time">
+                                        0
+                                    </strong>
+                                </div>
+
+                                <div class="stat-row">
+                                    <span>Scor maxim</span>
+                                    <strong id="reaction-best-score">
+                                        0
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- APPEARANCE SETTINGS -->
+
+                <div class="settings-card">
+
+                    <h2>Aparență</h2>
+
+                    <div class="settings-grid">
+
+                        <div class="setting-item">
+
+                            <div class="setting-label">
+                                <span>Temă</span>
+                            </div>
+
+                            <div class="theme-buttons">
+
+                                <button
+                                    class="theme-button active"
+                                    data-theme="dark"
+                                >
+                                    🌙 Dark
+                                </button>
+
+                                <button
+                                    class="theme-button"
+                                    data-theme="light"
+                                >
+                                    ☀️ Light
+                                </button>
+
+                                <button
+                                    class="theme-button"
+                                    data-theme="ocean"
+                                >
+                                    🌊 Ocean
+                                </button>
+
+                            </div>
+
+                            <p class="setting-description">
+                                Alege tema preferată
+                            </p>
+
+                        </div>
+
+                    </div>
 
                 </div>
 

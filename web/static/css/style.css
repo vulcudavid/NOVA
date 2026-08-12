@@ -1205,10 +1205,187 @@ button.home-card:hover {
 
 
 /* ========================================= */
+/* REACTION GAME MENU                        */
+/* ========================================= */
+
+.reaction-menu {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 30px;
+
+    padding: 60px 20px;
+
+    text-align: center;
+}
+
+.reaction-menu h3 {
+
+    font-size: 32px;
+
+    margin: 0;
+
+    color: white;
+}
+
+
+/* ========================================= */
+/* REACTION CONTAINER                        */
+/* ========================================= */
+
+.reaction-container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 40px;
+
+    padding: 60px 20px;
+
+    min-height: 500px;
+}
+
+.reaction-container p {
+
+    font-size: 24px;
+
+    color: #888e99;
+
+    margin: 0;
+}
+
+
+/* ========================================= */
+/* REACTION BOX                              */
+/* ========================================= */
+
+.reaction-box {
+
+    width: 150px;
+
+    height: 150px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    background: #d85050;
+
+    cursor: default;
+
+    transition: background 0.3s ease;
+
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.reaction-box.ready {
+
+    background: #50d885;
+
+    cursor: pointer;
+}
+
+.reaction-box:active:not(.ready) {
+
+    transform: scale(0.98);
+}
+
+
+/* ========================================= */
+/* REACTION RESULTS                          */
+/* ========================================= */
+
+.reaction-results {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 30px;
+
+    padding: 60px 20px;
+
+    text-align: center;
+}
+
+.reaction-results h3 {
+
+    font-size: 28px;
+
+    margin: 0;
+
+    color: white;
+}
+
+.reaction-time-display,
+.reaction-score-display {
+
+    background: #181b21;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    min-width: 250px;
+}
+
+.reaction-time-display p,
+.reaction-score-display p {
+
+    margin: 0 0 10px 0;
+
+    color: #888e99;
+
+    font-size: 14px;
+}
+
+.reaction-time-display strong,
+.reaction-score-display strong {
+
+    font-size: 36px;
+
+    color: #50d885;
+
+    display: block;
+}
+
+.reaction-time-display span {
+
+    color: #888e99;
+
+    font-size: 14px;
+
+    margin-left: 5px;
+}
+
+
+/* ========================================= */
 /* MOBILE / TABLET                           */
 /* ========================================= */
 
 @media (max-width: 700px) {
+
+    .reaction-box {
+
+        width: 120px;
+
+        height: 120px;
+    }
 
     .game-screen {
 
@@ -1249,4 +1426,402 @@ button.home-card:hover {
         font-size: 28px;
     }
 
+}
+
+
+/* ========================================= */
+/* SETTINGS                                  */
+/* ========================================= */
+
+.settings-card {
+
+    background: #181b21;
+
+    border-radius: 15px;
+
+    padding: 30px;
+
+    margin-top: 30px;
+}
+
+.settings-card h2 {
+
+    margin-top: 0;
+
+    margin-bottom: 25px;
+
+    font-size: 22px;
+}
+
+.settings-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+    gap: 25px;
+}
+
+/* ========================================= */
+/* DIFFICULTY SETTINGS                       */
+/* ========================================= */
+
+.setting-item {
+
+    background: #252932;
+
+    border-radius: 12px;
+
+    padding: 20px;
+}
+
+.setting-label {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 15px;
+
+    font-size: 16px;
+}
+
+.setting-label strong {
+
+    font-size: 24px;
+
+    color: #50d885;
+}
+
+.level-bar {
+
+    width: 100%;
+
+    height: 12px;
+
+    background: #303641;
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+    margin-bottom: 15px;
+}
+
+.level-indicator {
+
+    height: 100%;
+
+    background: linear-gradient(90deg, #50d885, #50d8c5);
+
+    border-radius: 6px;
+
+    transition: width 0.3s ease;
+}
+
+.setting-description {
+
+    font-size: 14px;
+
+    color: #888e99;
+
+    margin: 0;
+}
+
+/* ========================================= */
+/* STATISTICS                                */
+/* ========================================= */
+
+.stat-item {
+
+    background: #252932;
+
+    border-radius: 12px;
+
+    padding: 20px;
+
+    border-left: 4px solid #50d885;
+}
+
+.stat-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #303641;
+}
+
+.stat-icon {
+
+    font-size: 24px;
+}
+
+.stat-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+.stat-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid #303641;
+}
+
+.stat-row:last-child {
+
+    border-bottom: none;
+}
+
+.stat-row span {
+
+    color: #888e99;
+
+    font-size: 14px;
+}
+
+.stat-row strong {
+
+    font-size: 18px;
+
+    color: #50d885;
+}
+
+/* ========================================= */
+/* THEME BUTTONS                             */
+/* ========================================= */
+
+.theme-buttons {
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-bottom: 15px;
+
+    flex-wrap: wrap;
+}
+
+.theme-button {
+
+    padding: 12px 20px;
+
+    border: 2px solid #303641;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #888e99;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: all 0.3s ease;
+}
+
+.theme-button:hover {
+
+    border-color: #50d885;
+
+    color: white;
+}
+
+.theme-button.active {
+
+    background: #50d885;
+
+    border-color: #50d885;
+
+    color: #101216;
+}
+
+/* ========================================= */
+/* THEME VARIANTS                            */
+/* ========================================= */
+
+body.theme-light {
+
+    background: #f5f5f5;
+
+    color: #333;
+}
+
+body.theme-light #sidebar {
+
+    background: #e8e8e8;
+
+    color: #333;
+}
+
+body.theme-light .menu-button {
+
+    color: #666;
+}
+
+body.theme-light .menu-button:hover {
+
+    background: #d5d5d5;
+
+    color: #333;
+}
+
+body.theme-light .menu-button.active {
+
+    background: #b3d9ff;
+
+    color: #0055cc;
+}
+
+body.theme-light #content {
+
+    background: #f5f5f5;
+}
+
+body.theme-light .page {
+
+    color: #333;
+}
+
+body.theme-light .settings-card,
+body.theme-light .home-card,
+body.theme-light .game-screen {
+
+    background: #e8e8e8;
+
+    color: #333;
+}
+
+body.theme-light .setting-item,
+body.theme-light .stat-item {
+
+    background: #d5d5d5;
+
+    color: #333;
+}
+
+body.theme-light .setting-description,
+body.theme-light .stat-row span {
+
+    color: #666;
+}
+
+body.theme-light #messages,
+body.theme-light #chat-container {
+
+    background: #e8e8e8;
+}
+
+body.theme-light .message.nova {
+
+    background: #b3d9ff;
+
+    color: #0055cc;
+}
+
+body.theme-light .message.user {
+
+    background: #0055cc;
+
+    color: white;
+}
+
+/* ========================================= */
+/* OCEAN THEME                               */
+/* ========================================= */
+
+body.theme-ocean {
+
+    background: #0a1929;
+
+    color: #e1f5fe;
+}
+
+body.theme-ocean #sidebar {
+
+    background: #051a34;
+}
+
+body.theme-ocean .menu-button {
+
+    color: #80deea;
+}
+
+body.theme-ocean .menu-button:hover {
+
+    background: #0d47a1;
+
+    color: #e1f5fe;
+}
+
+body.theme-ocean .menu-button.active {
+
+    background: #01579b;
+
+    color: #80deea;
+}
+
+body.theme-ocean .settings-card,
+body.theme-ocean .home-card,
+body.theme-ocean .game-screen {
+
+    background: #051a34;
+
+    color: #e1f5fe;
+}
+
+body.theme-ocean .setting-item,
+body.theme-ocean .stat-item {
+
+    background: #0d3d56;
+
+    color: #e1f5fe;
+
+    border-left-color: #00bcd4;
+}
+
+body.theme-ocean .level-bar {
+
+    background: #01579b;
+}
+
+body.theme-ocean .level-indicator {
+
+    background: linear-gradient(90deg, #00bcd4, #0097a7);
+}
+
+body.theme-ocean .setting-description,
+body.theme-ocean .stat-row span {
+
+    color: #80deea;
+}
+
+body.theme-ocean .stat-row strong,
+body.theme-ocean .setting-label strong {
+
+    color: #00bcd4;
 }

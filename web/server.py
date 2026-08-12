@@ -148,3 +148,35 @@ async def decrease_memory_level():
     game_manager.decrease_game_level()
 
     return game_manager.get_memory_state_with_difficulty()
+
+
+# ============================================================
+# REACTION GAME
+# ============================================================
+
+@app.post("/api/games/reaction/start")
+async def start_reaction_game():
+
+    return game_manager.start_reaction()
+
+
+@app.get("/api/games/reaction/state")
+async def get_reaction_state():
+
+    return game_manager.get_reaction_state()
+
+
+@app.post("/api/games/reaction/react")
+async def react_reaction_game():
+
+    return game_manager.reaction_input()
+
+
+# ============================================================
+# SETTINGS
+# ============================================================
+
+@app.get("/api/settings")
+async def get_settings():
+
+    return game_manager.get_settings()

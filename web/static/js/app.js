@@ -857,3 +857,605 @@ memoryDecreaseLevel.addEventListener(
 
     }
 );
+
+
+// ============================================================
+// REACTION GAME
+// ============================================================
+
+const reactionGame = document.getElementById("reaction-game");
+
+const reactionBackButton =
+    document.getElementById("reaction-back");
+
+const reactionMenu =
+    document.getElementById("reaction-menu");
+
+const reactionContainer =
+    document.getElementById("reaction-container");
+
+const reactionResults =
+    document.getElementById("reaction-results");
+
+const reactionStartButton =
+    document.getElementById("reaction-start-button");
+
+const reactionBox =
+    document.getElementById("reaction-box");
+
+const reactionText =
+    document.getElementById("reaction-text");
+
+const reactionNewGameButton =
+    document.getElementById("reaction-new-game");
+
+const reactionTimeValue =
+    document.getElementById("reaction-time-value");
+
+const reactionScoreValue =
+    document.getElementById("reaction-score-value");
+
+const reactionGameButton =
+    document.querySelector(
+        '.game-card[data-game="reaction"]'
+    );
+
+let reactionGameRunning = false;
+let reactionUpdateInterval = null;
+
+
+// ============================================================
+// OPEN REACTION GAME
+// ============================================================
+
+if (reactionGameButton) {
+
+    reactionGameButton.addEventListener(
+        "click",
+        startReactionGame
+    );
+
+}
+else {
+
+    console.error(
+        "Reaction game button not found!"
+    );
+
+}
+
+
+async function startReactionGame() {
+
+    gamesMenu.style.display = "none";
+
+    reactionGame.style.display = "block";
+
+    reactionMenu.style.display = "flex";
+
+    reactionContainer.style.display = "none";
+
+    reactionResults.style.display = "none";
+
+    reactionGameRunning = false;
+
+    clearInterval(reactionUpdateInterval);
+}
+
+
+// ============================================================
+// START REACTION GAME
+// ============================================================
+
+if (reactionStartButton) {
+
+    reactionStartButton.addEventListener(
+        "click",
+        async () => {
+
+        reactionMenu.style.display = "none";
+
+        reactionContainer.style.display = "flex";
+
+        reactionResults.style.display = "none";
+
+        reactionGameRunning = true;
+
+        reactionBox.classList.remove("ready");
+
+        reactionText.textContent = "Asteptati....";
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/games/reaction/start",
+                    {
+                        method: "POST"
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Server error: " +
+                    response.status
+                );
+            }
+
+            const data =
+                await response.json();
+
+            console.log(
+                "Reaction game started:",
+                data
+            );
+
+            /*
+             * Actualizez starea jocului
+             * periodic pentru a verifica
+             * dacă ar trebui să trec la "ready"
+             */
+
+            reactionUpdateInterval =
+                setInterval(
+                    async () => {
+
+                        await checkReactionState();
+
+                    },
+                    100
+                );
+
+        } catch (error) {
+
+            console.error(
+                "Reaction start error:",
+                error
+            );
+
+            reactionGameRunning = false;
+
+            clearInterval(
+                reactionUpdateInterval
+            );
+
+            reactionText.textContent =
+                "Eroare la pornirea jocului.";
+        }
+
+    }
+    );
+
+}
+
+
+// ============================================================
+// CHECK REACTION STATE
+// ============================================================
+
+async function checkReactionState() {
+
+    if (!reactionGameRunning) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/games/reaction/state",
+                {
+                    method: "GET"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server error: " +
+                response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "Reaction state:",
+            data
+        );
+
+        if (
+            data.state === "ready"
+        ) {
+
+            reactionBox.classList.add(
+                "ready"
+            );
+
+            reactionText.textContent =
+                "Apasati!";
+
+            /*
+             * Elimin intervalul pentru că
+             * jocul este pregătit
+             */
+
+            clearInterval(
+                reactionUpdateInterval
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Check state error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// REACTION BOX CLICK
+// ============================================================
+
+if (reactionBox) {
+
+    reactionBox.addEventListener(
+        "click",
+        async () => {
+
+        if (
+            !reactionGameRunning ||
+            !reactionBox.classList.contains(
+                "ready"
+            )
+        ) {
+            return;
+        }
+
+        reactionGameRunning = false;
+
+        clearInterval(
+            reactionUpdateInterval
+        );
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/games/reaction/react",
+                    {
+                        method: "POST"
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Server error: " +
+                    response.status
+                );
+            }
+
+            const data =
+                await response.json();
+
+            console.log(
+                "Reaction result:",
+                data
+            );
+
+            showReactionResults(data);
+
+        } catch (error) {
+
+            console.error(
+                "Reaction react error:",
+                error
+            );
+
+            reactionText.textContent =
+                "Eroare la procesarea reacției.";
+        }
+
+    }
+    );
+
+}
+
+
+// ============================================================
+// SHOW REACTION RESULTS
+// ============================================================
+
+function showReactionResults(data) {
+
+    reactionContainer.style.display =
+        "none";
+
+    reactionResults.style.display =
+        "flex";
+
+    reactionTimeValue.textContent =
+        data.reaction_time;
+
+    reactionScoreValue.textContent =
+        data.score;
+}
+
+
+// ============================================================
+// NEW REACTION GAME
+// ============================================================
+
+if (reactionNewGameButton) {
+
+    reactionNewGameButton.addEventListener(
+        "click",
+        async () => {
+
+        reactionMenu.style.display = "flex";
+
+        reactionContainer.style.display =
+            "none";
+
+        reactionResults.style.display =
+            "none";
+
+        reactionGameRunning = false;
+
+        clearInterval(
+            reactionUpdateInterval
+        );
+
+    }
+    );
+
+}
+
+
+// ============================================================
+// BACK TO GAMES MENU (REACTION)
+// ============================================================
+
+if (reactionBackButton) {
+
+    reactionBackButton.addEventListener(
+        "click",
+        () => {
+
+        reactionGame.style.display = "none";
+
+        gamesMenu.style.display = "grid";
+
+        reactionGameRunning = false;
+
+        clearInterval(
+            reactionUpdateInterval
+        );
+
+    }
+    );
+
+}
+
+
+// ============================================================
+// SETTINGS PAGE
+// ============================================================
+
+const settingsPage =
+    document.getElementById("page-settings");
+
+const settingsButton =
+    document.querySelector(
+        '.menu-button[data-page="settings"]'
+    );
+
+const themeButtons =
+    document.querySelectorAll(
+        ".theme-button"
+    );
+
+// Elemente pentru display-urile nivelelor
+const commLevelDisplay =
+    document.getElementById("comm-level-display");
+
+const gameLevelDisplay =
+    document.getElementById("game-level-display");
+
+const commLevelBar =
+    document.getElementById("comm-level-bar");
+
+const gameLevelBar =
+    document.getElementById("game-level-bar");
+
+// Elemente pentru statistici Memory
+const memoryGamesPlayed =
+    document.getElementById("memory-games-played");
+
+const memoryBestScore =
+    document.getElementById("memory-best-score");
+
+const memoryAvgScore =
+    document.getElementById("memory-avg-score");
+
+// Elemente pentru statistici Reaction
+const reactionGamesPlayed =
+    document.getElementById("reaction-games-played");
+
+const reactionBestTime =
+    document.getElementById("reaction-best-time");
+
+const reactionAvgTime =
+    document.getElementById("reaction-avg-time");
+
+const reactionBestScore =
+    document.getElementById("reaction-best-score");
+
+
+// ============================================================
+// LOAD SETTINGS ON PAGE OPEN
+// ============================================================
+
+if (settingsButton) {
+
+    settingsButton.addEventListener(
+        "click",
+        loadSettings
+    );
+
+}
+
+
+async function loadSettings() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/settings",
+                {
+                    method: "GET"
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server error: " +
+                response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        console.log(
+            "Settings loaded:",
+            data
+        );
+
+        updateSettingsDisplay(data);
+
+    } catch (error) {
+
+        console.error(
+            "Settings load error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ============================================================
+// UPDATE SETTINGS DISPLAY
+// ============================================================
+
+function updateSettingsDisplay(data) {
+
+    // Nivele
+    const commLevel = data.comm_level;
+    const gameLevel = data.game_level;
+
+    commLevelDisplay.textContent = commLevel;
+    gameLevelDisplay.textContent = gameLevel;
+
+    commLevelBar.style.width =
+        (commLevel * 33) + "%";
+
+    gameLevelBar.style.width =
+        (gameLevel * 33) + "%";
+
+    // Statistici Memory
+    memoryGamesPlayed.textContent =
+        data.memory.games_played;
+
+    memoryBestScore.textContent =
+        data.memory.best_score;
+
+    memoryAvgScore.textContent =
+        data.memory.average_score;
+
+    // Statistici Reaction
+    reactionGamesPlayed.textContent =
+        data.reaction.games_played;
+
+    reactionBestTime.textContent =
+        data.reaction.best_time;
+
+    reactionAvgTime.textContent =
+        data.reaction.average_time;
+
+    reactionBestScore.textContent =
+        data.reaction.best_score;
+
+}
+
+
+// ============================================================
+// THEME SYSTEM
+// ============================================================
+
+// Inițializez tema din localStorage
+function initTheme() {
+
+    const savedTheme =
+        localStorage.getItem("theme") || "dark";
+
+    applyTheme(savedTheme);
+
+}
+
+
+function applyTheme(themeName) {
+
+    document.body.className =
+        themeName === "dark" ? "" : `theme-${themeName}`;
+
+    themeButtons.forEach(btn => {
+
+        btn.classList.remove("active");
+
+        if (btn.dataset.theme === themeName) {
+
+            btn.classList.add("active");
+
+        }
+
+    });
+
+    localStorage.setItem("theme", themeName);
+
+}
+
+
+// Theme buttons event listeners
+themeButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const theme =
+                button.dataset.theme;
+
+            applyTheme(theme);
+
+        }
+    );
+
+});
+
+
+// Inițializez tema la încărcare
+initTheme();
+
