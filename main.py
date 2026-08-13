@@ -5,13 +5,14 @@ import uvicorn
 from communication.comm_manager import ComunicationManager
 from difficulty.difficulty_manager import DifficultyManager
 from activity.ActivityManager import ActivityManager
-from vision.camera import Camera
 from vision.vision_module import VisionModule
 from games.game_manager import GameManager
 from web.server import (
     app,
     set_communication_manager,
-    set_game_manager
+    set_game_manager,
+    set_vision_module,
+    set_difficulty_manager
 )
 
 
@@ -23,29 +24,28 @@ def communication_thread(communication_manager):
 
     communication_manager.run()
 
-
 # ============================================================
 # EMOTION THREAD
 # ============================================================
 
-def emotion_thread():
+# def emotion_thread():
 
-    camera = Camera()
+#     camera = Camera()
 
-    vision = VisionModule(
-        "resources/models/custom_cnn_model.tflite"
-    )
+#     vision = VisionModule(
+#         "resources/models/custom_cnn_model.tflite"
+#     )
 
-    while True:
+#     while True:
 
-        frame = camera.read()
+#         frame = camera.read()
 
-        if frame is None:
-            break
+#         if frame is None:
+#             break
 
-        vision.analyze_frame(frame)
+#         vision.analyze_frame(frame)
 
-    camera.release()
+#     camera.release()
 
 
 # ============================================================
@@ -75,7 +75,9 @@ def web_server_thread():
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=5000
+        port=5000,
+        ssl_keyfile="certs/key.pem",
+        ssl_certfile="certs/cert.pem"
     )
 
 
@@ -93,12 +95,24 @@ def main():
 
     activity_manager = ActivityManager()
 
+    set_difficulty_manager(
+        difficulty
+    )
+
     game_manager = GameManager(
         difficulty
     )
 
     set_game_manager(
         game_manager
+    )
+
+    vision_module = VisionModule(
+        "resources/models/custom_cnn_model.tflite"
+    )
+
+    set_vision_module(
+        vision_module
     )
 
 

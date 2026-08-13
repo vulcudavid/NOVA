@@ -10,7 +10,7 @@ class DifficultyManager:
         self.currentGame_level = 1
 
     def emotion_manager(self, emotion, confidence):
-        if emotion == "happy" and confidence >= 0.8:
+        if emotion == "happy" and confidence >= 0.6:
             if self.happy_start is None:
                 self.happy_start = time.monotonic()
             elapsed_time = time.monotonic() - self.happy_start
@@ -20,7 +20,7 @@ class DifficultyManager:
         else:
             self.happy_start = None
 
-        if emotion in ["sad", "angry"] and confidence >= 0.8:
+        if emotion in ["sad", "angry"] and confidence >= 0.6:
             if self.sadAngry_start is None:
                 self.sadAngry_start = time.monotonic()
             elapsed_time = time.monotonic() - self.sadAngry_start

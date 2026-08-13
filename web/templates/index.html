@@ -242,6 +242,27 @@
 
                 <div id="chat-container">
 
+                    <div id="camera-container" style="display: none;">
+
+                        <video
+                            id="camera-video"
+                            autoplay
+                            playsinline
+                            muted
+                        ></video>
+
+                        <canvas
+                            id="camera-canvas"
+                            style="display: none;"
+                        ></canvas>
+
+                        <div id="emotion-display">
+                            <span id="emotion-label">Neutral</span>
+                            <span id="emotion-confidence">0%</span>
+                        </div>
+
+                    </div>
+                    
                     <div id="messages">
 
                         <!-- Mesajele vor fi adăugate aici -->

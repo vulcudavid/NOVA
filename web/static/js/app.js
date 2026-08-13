@@ -11,6 +11,13 @@ menuButtons.forEach(button => {
 
         const pageName = button.dataset.page;
 
+        if (
+            pageName !== "chat" &&
+            conversationActive
+        ) {
+            stopEmotionDetection();
+        }
+        
         menuButtons.forEach(btn => {
             btn.classList.remove("active");
         });
@@ -48,6 +55,219 @@ const sendButton =
 const messages =
     document.getElementById("messages");
 
+
+
+// ============================================================
+// CAMERA + EMOTION DETECTION
+// ============================================================
+
+const cameraContainer =
+    document.getElementById("camera-container");
+
+const cameraVideo =
+    document.getElementById("camera-video");
+
+const cameraCanvas =
+    document.getElementById("camera-canvas");
+
+const emotionLabel =
+    document.getElementById("emotion-label");
+
+const emotionConfidence =
+    document.getElementById("emotion-confidence");
+
+let cameraStream = null;
+let emotionInterval = null;
+let conversationActive = false;
+
+
+async function startEmotionDetection() {
+
+    if (conversationActive) {
+        return;
+    }
+
+    try {
+
+        cameraStream =
+            await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: false
+            });
+
+        cameraVideo.srcObject =
+            cameraStream;
+
+        cameraContainer.style.display =
+            "block";
+
+        conversationActive = true;
+
+        console.log(
+            "Camera browser pornită."
+        );
+
+        startEmotionAnalysis();
+
+    } catch (error) {
+
+        console.error(
+            "Nu am putut accesa camera:",
+            error
+        );
+
+        alert(
+            "NOVA nu poate accesa camera. " +
+            "Verifică permisiunea camerei în browser."
+        );
+    }
+}
+
+function stopEmotionDetection() {
+
+    conversationActive = false;
+
+    if (emotionInterval !== null) {
+
+        clearInterval(
+            emotionInterval
+        );
+
+        emotionInterval = null;
+    }
+
+    if (cameraStream) {
+
+        cameraStream
+            .getTracks()
+            .forEach(track => track.stop());
+
+        cameraStream = null;
+    }
+
+    cameraVideo.srcObject = null;
+
+    cameraContainer.style.display =
+        "none";
+
+    console.log(
+        "Camera și analiza emoției au fost oprite."
+    );
+}
+
+function captureCameraFrame() {
+
+    if (!conversationActive) {
+        return;
+    }
+
+    if (
+        cameraVideo.videoWidth === 0 ||
+        cameraVideo.videoHeight === 0
+    ) {
+        return;
+    }
+
+    cameraCanvas.width =
+        cameraVideo.videoWidth;
+
+    cameraCanvas.height =
+        cameraVideo.videoHeight;
+
+    const context =
+        cameraCanvas.getContext("2d");
+
+    context.drawImage(
+        cameraVideo,
+        0,
+        0,
+        cameraCanvas.width,
+        cameraCanvas.height
+    );
+
+    cameraCanvas.toBlob(
+        blob => {
+
+            if (!blob) {
+                return;
+            }
+
+            sendFrameForEmotionAnalysis(
+                blob
+            );
+
+        },
+        "image/jpeg",
+        0.7
+    );
+}
+
+async function sendFrameForEmotionAnalysis(blob) {
+
+    if (!conversationActive) {
+        return;
+    }
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "frame",
+        blob,
+        "frame.jpg"
+    );
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/emotion",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "Emotion API error: " +
+                response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if (data.emotion) {
+
+            emotionLabel.textContent =
+                data.emotion;
+
+            emotionConfidence.textContent =
+                `${(data.confidence * 100).toFixed(1)}%`;
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Emotion analysis error:",
+            error
+        );
+    }
+}
+
+function startEmotionAnalysis() {
+
+    if (emotionInterval !== null) {
+        return;
+    }
+
+    emotionInterval =
+        setInterval(
+            captureCameraFrame,
+            500
+        );
+}
 
 // ============================================================
 // ADD MESSAGE
@@ -114,6 +334,9 @@ async function sendMessage() {
 
     if (text === "") {
         return;
+    }
+    if (!conversationActive) {
+        await startEmotionDetection();
     }
 
     addMessage(

@@ -1,9 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from pathlib import Path
 from games.game_manager import GameManager
+from vision.vision_module import VisionModule
+import cv2
+import numpy as np
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -17,6 +20,20 @@ app = FastAPI(
 
 communication_manager = None
 game_manager = None
+vision_module = None
+difficulty_manager = None
+
+def set_difficulty_manager(manager):
+
+    global difficulty_manager
+
+    difficulty_manager = manager
+
+def set_vision_module(module):
+
+    global vision_module
+
+    vision_module = module
 
 def set_game_manager(manager):
 
@@ -180,3 +197,116 @@ async def react_reaction_game():
 async def get_settings():
 
     return game_manager.get_settings()
+
+# ============================================================
+# CAMERA / EMOTION DETECTION
+# ============================================================
+
+@app.post("/api/vision/frame")
+async def analyze_frame(file: UploadFile = File(...)):
+
+    if vision_module is None:
+        return {
+            "error": "VisionModule is not initialized"
+        }
+
+    image_bytes = await file.read()
+
+    np_array = np.frombuffer(
+        image_bytes,
+        np.uint8
+    )
+
+    frame = cv2.imdecode(
+        np_array,
+        cv2.IMREAD_COLOR
+    )
+
+    if frame is None:
+        return {
+            "error": "Frame invalid"
+        }
+
+    results = vision_module.analyze_frame(frame)
+
+    return {
+        "faces": results
+    }
+    
+
+class EmotionRequest(BaseModel):
+    emotion: str
+    confidence: float
+
+
+@app.post("/api/emotion")
+async def analyze_emotion(
+    frame: UploadFile = File(...)
+):
+
+    if vision_module is None:
+        return {
+            "error": "VisionModule is not initialized"
+        }
+
+    image_bytes = await frame.read()
+
+    np_array = np.frombuffer(
+        image_bytes,
+        np.uint8
+    )
+
+    image = cv2.imdecode(
+        np_array,
+        cv2.IMREAD_COLOR
+    )
+
+    if image is None:
+        return {
+            "error": "Frame invalid"
+        }
+
+    results = vision_module.analyze_frame(
+        image
+    )
+
+    if not results:
+
+        return {
+            "emotion": "neutral",
+            "confidence": 0.0,
+            "comm_level":
+                difficulty_manager.get_current_comm_level()
+                if difficulty_manager is not None
+                else 1
+        }
+
+    face = results[0]
+
+    emotion = face["emotion"]
+    confidence = face["confidence"]
+
+    if difficulty_manager is not None:
+
+        difficulty_manager.emotion_manager(
+            emotion,
+            confidence
+        )
+
+    current_level = (
+        difficulty_manager.get_current_comm_level()
+        if difficulty_manager is not None
+        else 1
+    )
+
+    print(
+        f"[EMOTION] {emotion} "
+        f"{confidence:.2f} "
+        f"comm_level={current_level}"
+    )
+
+    return {
+        "emotion": emotion,
+        "confidence": confidence,
+        "comm_level": current_level
+    }
