@@ -100,6 +100,18 @@ The purpose of this game is not therapeutic by itself. It serves as a sandbox fo
 - Voice interaction
 - AI conversational assistant
 
+## Voice API
+
+NOVA receives voice recordings from the Nano ESP32 through the Uno Q API.
+
+- `POST /api/stt` accepts a binary WAV body with `Content-Type: audio/wav`.
+- The WAV is transcribed locally with the `whisper.cpp` executable and the Romanian model configured through `NOVA_WHISPER_MODEL`.
+- The transcription is sent through the existing `CommunicationManager` to the external LLM server.
+- The LLM response is converted locally to a Romanian WAV with Piper and stored in `resources/generated_audio/`.
+- `POST /api/tts` provides an isolated text-to-WAV test endpoint.
+
+The current implementation generates the audio file but does not force playback. Physical output through the Uno Q audio adapter and PAM8403 is intentionally a later step.
+
 ## Status
 
 🚧 Work in Progress

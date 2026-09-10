@@ -1,3 +1,4 @@
+import os
 import threading
 
 import uvicorn
@@ -7,12 +8,19 @@ from difficulty.difficulty_manager import DifficultyManager
 from activity.ActivityManager import ActivityManager
 from vision.vision_module import VisionModule
 from games.game_manager import GameManager
+from audio.audio_manager import AudioManager
+from stt.whisper_service import WhisperService
 from web.server import (
-    app,
-    set_communication_manager,
     set_game_manager,
     set_vision_module,
     set_difficulty_manager
+)
+from voice.server import (
+    app as voice_app,
+    set_communication_manager as set_voice_communication_manager,
+    set_game_manager as set_voice_game_manager,
+    set_tts_manager as set_voice_tts_manager,
+    set_whisper_service as set_voice_whisper_service
 )
 
 
@@ -70,12 +78,12 @@ def activity_thread(activity_manager):
 # WEB SERVER THREAD
 # ============================================================
 
-def web_server_thread():
+def voice_server_thread():
 
     uvicorn.run(
-        app,
+        voice_app,
         host="0.0.0.0",
-        port=5000
+        port=int(os.getenv("NOVA_VOICE_PORT", "5000"))
     )
 
 
@@ -128,8 +136,22 @@ def main():
     # Facem CommunicationManager disponibil pentru
     # serverul web.
 
-    set_communication_manager(
+    set_voice_communication_manager(
         communication_manager
+    )
+
+    set_voice_game_manager(
+        game_manager
+    )
+
+    set_voice_whisper_service(
+        WhisperService()
+    )
+
+    set_voice_tts_manager(
+        AudioManager(
+            "resources/audio_voice/ro_RO-mihai-medium.onnx"
+        )
     )
 
 
@@ -161,9 +183,9 @@ def main():
     # Web Server Thread
     # --------------------------------------------------------
 
-    web_server = threading.Thread(
-        target=web_server_thread,
-        name="WebServerThread",
+    voice_server = threading.Thread(
+        target=voice_server_thread,
+        name="VoiceServerThread",
         daemon=True
     )
 
@@ -176,7 +198,7 @@ def main():
 
     activity.start()
 
-    web_server.start()
+    voice_server.start()
 
 
     # --------------------------------------------------------
@@ -187,7 +209,7 @@ def main():
 
     activity.join()
 
-    web_server.join()
+    voice_server.join()
 
 
 # ============================================================

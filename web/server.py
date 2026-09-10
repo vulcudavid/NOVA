@@ -1,8 +1,9 @@
+from pathlib import Path
+
 from fastapi import FastAPI, UploadFile, File
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-from pathlib import Path
 from games.game_manager import GameManager
 from vision.vision_module import VisionModule
 import cv2

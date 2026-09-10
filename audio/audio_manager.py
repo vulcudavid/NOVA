@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 import tempfile
 import wave
 
@@ -51,6 +52,33 @@ class AudioManager:
             if os.path.exists(wav_path):
                 os.remove(wav_path)
 
+    def generate(self, text, output_path):
+
+        if not text:
+            raise ValueError("Textul TTS este gol")
+
+        output_path = os.fspath(output_path)
+        output_directory = os.path.dirname(output_path)
+        if output_directory:
+            os.makedirs(output_directory, exist_ok=True)
+
+        subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "piper",
+                "-m",
+                self.model_path,
+                "-f",
+                output_path
+            ],
+            input=text,
+            text=True,
+            check=True
+        )
+
+        return output_path
+
     def speak(self, text):
 
         if not text:
@@ -62,26 +90,10 @@ class AudioManager:
             suffix=".wav",
             delete=False
         ) as temp_file:
-
             wav_path = temp_file.name
 
         try:
-
-            subprocess.run(
-                [
-                    "python3",
-                    "-m",
-                    "piper",
-                    "-m",
-                    self.model_path,
-                    "-f",
-                    wav_path
-                ],
-                input=text,
-                text=True,
-                check=True
-            )
-
+            self.generate(text, wav_path)
             subprocess.run(
                 ["aplay", wav_path],
                 check=True

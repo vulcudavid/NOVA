@@ -16,3 +16,4 @@ __pycache__/
 
 # Generated images
 resources/images/result_emotions.jpg
+resources/generated_audio/
