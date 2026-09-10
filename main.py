@@ -75,9 +75,7 @@ def web_server_thread():
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=5000,
-        ssl_keyfile="certs/key.pem",
-        ssl_certfile="certs/cert.pem"
+        port=5000
     )
 
 
