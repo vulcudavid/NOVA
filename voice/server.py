@@ -1,3 +1,4 @@
+import asyncio
 import os
 import uuid
 from pathlib import Path
@@ -17,6 +18,11 @@ communication_manager = None
 whisper_service = None
 tts_manager = None
 game_manager = None
+vision_manager = None
+
+def set_vision_manager(manager):
+    global vision_manager
+    vision_manager = manager
 
 
 def set_communication_manager(manager):
@@ -166,4 +172,63 @@ async def text_to_speech(request: TTSRequest):
         "success": True,
         "audio_file": str(audio_path),
         "format": "wav"
+    }
+
+
+# ============================================================
+# VISION
+# ============================================================
+
+@app.post("/api/vision/start")
+async def start_vision():
+
+    if vision_manager is None:
+
+        return {
+            "success": False,
+            "error": "VisionManager is not initialized"
+        }
+
+    await asyncio.to_thread(vision_manager.start)
+
+    return {
+        "success": True,
+        "running": vision_manager.is_running()
+    }
+
+
+@app.post("/api/vision/stop")
+async def stop_vision():
+
+    if vision_manager is None:
+
+        return {
+            "success": False,
+            "error": "VisionManager is not initialized"
+        }
+
+    await asyncio.to_thread(vision_manager.stop)
+
+    return {
+        "success": True,
+        "running": vision_manager.is_running()
+    }
+
+
+@app.get("/api/vision/state")
+async def vision_state():
+
+    if vision_manager is None:
+
+        return {
+            "success": False,
+            "error": "VisionManager is not initialized"
+        }
+
+    emotion = vision_manager.get_current_emotion()
+
+    return {
+        "success": True,
+        "running": vision_manager.is_running(),
+        **emotion
     }

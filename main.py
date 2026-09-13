@@ -7,20 +7,18 @@ from communication.comm_manager import ComunicationManager
 from difficulty.difficulty_manager import DifficultyManager
 from activity.ActivityManager import ActivityManager
 from vision.vision_module import VisionModule
+from vision.vision_manager import VisionManager
 from games.game_manager import GameManager
 from audio.audio_manager import AudioManager
 from stt.whisper_service import WhisperService
-from web.server import (
-    set_game_manager,
-    set_vision_module,
-    set_difficulty_manager
-)
+
 from voice.server import (
     app as voice_app,
     set_communication_manager as set_voice_communication_manager,
     set_game_manager as set_voice_game_manager,
     set_tts_manager as set_voice_tts_manager,
-    set_whisper_service as set_voice_whisper_service
+    set_whisper_service as set_voice_whisper_service,
+    set_vision_manager as set_voice_vision_manager
 )
 
 
@@ -31,29 +29,6 @@ from voice.server import (
 def communication_thread(communication_manager):
 
     communication_manager.run()
-
-# ============================================================
-# EMOTION THREAD
-# ============================================================
-
-# def emotion_thread():
-
-#     camera = Camera()
-
-#     vision = VisionModule(
-#         "resources/models/custom_cnn_model.tflite"
-#     )
-
-#     while True:
-
-#         frame = camera.read()
-
-#         if frame is None:
-#             break
-
-#         vision.analyze_frame(frame)
-
-#     camera.release()
 
 
 # ============================================================
@@ -94,31 +69,44 @@ def voice_server_thread():
 def main():
 
     # --------------------------------------------------------
-    # Shared objects
+    # Difficulty Manager
     # --------------------------------------------------------
 
     difficulty = DifficultyManager()
 
+    # --------------------------------------------------------
+    # Activity Manager
+    # --------------------------------------------------------
+
     activity_manager = ActivityManager()
 
-    set_difficulty_manager(
-        difficulty
-    )
+
+    # --------------------------------------------------------
+    # Game Manager
+    # --------------------------------------------------------
 
     game_manager = GameManager(
         difficulty
     )
 
-    set_game_manager(
-        game_manager
-    )
+    # --------------------------------------------------------
+    # Vision Module
+    # --------------------------------------------------------
 
     vision_module = VisionModule(
         "resources/models/custom_cnn_model.tflite"
     )
 
-    set_vision_module(
-        vision_module
+    vision_manager = VisionManager(
+        vision_module=vision_module,
+        difficulty_manager=difficulty,
+        mac_address="20:9B:A9:73:9C:F2",
+        rfcomm_channel=1,
+        frame_interval=0.2
+    )
+
+    set_voice_vision_manager(
+        vision_manager
     )
 
 
@@ -128,13 +116,13 @@ def main():
 
     communication_manager = ComunicationManager(
         difficulty,
-        activity_manager,
-
+        activity_manager
     )
 
 
-    # Facem CommunicationManager disponibil pentru
-    # serverul web.
+    # --------------------------------------------------------
+    # Shared objects for Voice Server
+    # --------------------------------------------------------
 
     set_voice_communication_manager(
         communication_manager
@@ -180,7 +168,7 @@ def main():
 
 
     # --------------------------------------------------------
-    # Web Server Thread
+    # Voice Server Thread
     # --------------------------------------------------------
 
     voice_server = threading.Thread(
@@ -191,7 +179,7 @@ def main():
 
 
     # --------------------------------------------------------
-    # Pornirea thread-urilor
+    # Start threads
     # --------------------------------------------------------
 
     communication.start()
@@ -202,7 +190,7 @@ def main():
 
 
     # --------------------------------------------------------
-    # Așteptăm thread-urile
+    # Wait for threads
     # --------------------------------------------------------
 
     communication.join()
