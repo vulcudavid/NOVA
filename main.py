@@ -35,7 +35,7 @@ def communication_thread(communication_manager):
 # ACTIVITY THREAD
 # ============================================================
 
-def activity_thread(activity_manager):
+def activity_thread(activity_manager, tts_manager):
 
     while True:
 
@@ -44,6 +44,9 @@ def activity_thread(activity_manager):
             message = activity_manager.get_message()
 
             print(message)
+
+            if tts_manager is not None:
+                tts_manager.speak(message)
 
         import time
         time.sleep(1)
@@ -136,10 +139,15 @@ def main():
         WhisperService()
     )
 
+    # AudioManager is created once and shared between the voice server
+    # (LLM replies) and the activity thread (inactivity reminders), so both
+    # use the same speaker and the same playback lock.
+    audio_manager = AudioManager(
+        "resources/audio_voice/ro_RO-mihai-medium.onnx"
+    )
+
     set_voice_tts_manager(
-        AudioManager(
-            "resources/audio_voice/ro_RO-mihai-medium.onnx"
-        )
+        audio_manager
     )
 
 
@@ -161,7 +169,7 @@ def main():
 
     activity = threading.Thread(
         target=activity_thread,
-        args=(activity_manager,),
+        args=(activity_manager, audio_manager),
         name="ActivityThread",
         daemon=True
     )

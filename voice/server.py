@@ -60,7 +60,16 @@ def _create_tts_file(text):
     return output_path
 
 
-def _generate_tts_for_response(llm_response):
+def _speak_response(llm_response):
+    """
+    Plays NOVA's reply through the speaker connected to the Uno Q (USB DAC ->
+    amplifier -> speaker). Runs as a background task, after the text reply
+    has already been sent to the handset, so it doesn't delay the on-screen
+    display.
+    """
+    if tts_manager is None:
+        return
+
     try:
         response_text = (
             llm_response.get("response")
@@ -69,9 +78,10 @@ def _generate_tts_for_response(llm_response):
         )
 
         if response_text:
-            _create_tts_file(response_text)
+            tts_manager.speak(response_text)
+
     except Exception as error:
-        print(f"[VOICE] LLM/TTS processing failed: {error}")
+        print(f"[VOICE] TTS playback failed: {error}")
 
 
 class ChatRequest(BaseModel):
@@ -111,7 +121,7 @@ async def chat(
 
     if isinstance(response, dict) and response.get("response"):
         background_tasks.add_task(
-            _generate_tts_for_response,
+            _speak_response,
             response
         )
 
